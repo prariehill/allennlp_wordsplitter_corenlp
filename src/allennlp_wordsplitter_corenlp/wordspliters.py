@@ -63,7 +63,7 @@ class CorenlpSubprocWordSplitter(CorenlpRemoteWordSplitter):
         ----------
 
         * For parameters from ``path_to_jar`` to ``port``, see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.
-        * For parameters ``encoding``,  see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.CoreNLPParser
+        * For parameter ``encoding``,  see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.CoreNLPParser
         """
         self._server = CoreNLPServer(
             path_to_jar, path_to_models_jar, verbose, java_options, corenlp_options, port)
