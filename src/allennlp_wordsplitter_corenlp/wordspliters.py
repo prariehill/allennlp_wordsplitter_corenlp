@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 from allennlp.common import Registrable
@@ -6,45 +7,7 @@ from allennlp.data.tokenizers.word_splitter import WordSplitter
 from nltk.parse.corenlp import CoreNLPParser, CoreNLPServer
 from overrides import overrides
 
-__all__ = ['CorenlpSubprocWordSplitter', 'CorenlpRemoteWordSplitter']
-
-
-@WordSplitter.register('corenlp_subproc')
-class CorenlpSubprocWordSplitter(WordSplitter):
-    """
-    A ``WordSplitter`` that uses CoreNLP's tokenizer.
-    It starts ``corenlp-server`` as a sub-process, and call it's Web API.
-    """
-
-    def __init__(self,
-                 path_to_jar: str = None,
-                 path_to_models_jar: str = None,
-                 verbose: str = False,
-                 java_options: str = None,
-                 corenlp_options: str = None,
-                 port: int = None,
-                 encoding: str = 'utf8',
-                 ):
-        """
-        Parameters
-        ----------
-
-        * For parameters from ``path_to_jar`` to ``port``, see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.
-        * For parameters ``encoding``,  see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.CoreNLPParser
-        """
-        self._server = CoreNLPServer(
-            path_to_jar, path_to_models_jar, verbose, java_options, corenlp_options, port)
-        self._make_parser = lambda: CoreNLPParser(
-            self._server.url, encoding, 'pos')
-        self._server.start()
-
-    def __del__(self):
-        self._server.stop()
-
-    @overrides
-    def split_words(self, sentence: str) -> List[Token]:
-        parser = self._make_parser()
-        return [Token(t) for t in parser.tokenize(sentence)]
+__all__ = ['CorenlpRemoteWordSplitter', 'CorenlpSubprocWordSplitter']
 
 
 @WordSplitter.register('corenlp_remote')
@@ -68,5 +31,44 @@ class CorenlpRemoteWordSplitter(WordSplitter):
 
     @overrides
     def split_words(self, sentence: str) -> List[Token]:
-        parser = self._make_parser()
-        return [Token(t) for t in parser.tokenize(sentence)]
+        return [Token(t) for t in self._make_parser().tokenize(sentence)]
+
+    @overrides
+    def batch_split_words(self, sentences: List[str]) -> List[List[Token]]:
+        with ThreadPoolExecutor() as executor:
+            return [m for m in executor.map(
+                lambda s: [Token(t) for t in self._make_parser().tokenize(s)],
+                sentences
+            )]
+
+
+@WordSplitter.register('corenlp_subproc')
+class CorenlpSubprocWordSplitter(CorenlpRemoteWordSplitter):
+    """
+    A ``WordSplitter`` that uses CoreNLP's tokenizer.
+    It starts ``corenlp-server`` as a sub-process, and call it's Web API.
+    """
+
+    def __init__(self,
+                 path_to_jar: str = None,
+                 path_to_models_jar: str = None,
+                 verbose: str = False,
+                 java_options: str = None,
+                 corenlp_options: str = None,
+                 port: int = None,
+                 encoding: str = 'utf8',
+                 ):
+        """
+        Parameters
+        ----------
+
+        * For parameters from ``path_to_jar`` to ``port``, see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.
+        * For parameters ``encoding``,  see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.CoreNLPParser
+        """
+        self._server = CoreNLPServer(
+            path_to_jar, path_to_models_jar, verbose, java_options, corenlp_options, port)
+        self._server.start()
+        super().__init__(self._server.url, encoding)
+
+    def __del__(self):
+        self._server.stop()
