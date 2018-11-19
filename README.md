@@ -2,9 +2,7 @@
 
 Add a [CoreNLP] `WordSplitter` into [AllenNLP]'s tokenizers.
 
-## usage
-
-### config
+## config
 
 ```js
 {
@@ -28,7 +26,7 @@ Add a [CoreNLP] `WordSplitter` into [AllenNLP]'s tokenizers.
 }
 ```
 
-### CLI
+## CLI
 
 ```sh
 allennlp train --include-package allennlp_wordsplitter_corenlp -s /your/output/dir /your/training/config/file
