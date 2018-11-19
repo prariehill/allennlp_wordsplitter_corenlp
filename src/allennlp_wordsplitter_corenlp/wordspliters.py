@@ -6,12 +6,14 @@ from allennlp.data.tokenizers.word_splitter import WordSplitter
 from nltk.parse.corenlp import CoreNLPParser, CoreNLPServer
 from overrides import overrides
 
+__all__ = ['CorenlpSubprocWordSplitter', 'CorenlpRemoteWordSplitter']
+
 
 @WordSplitter.register('corenlp_subproc')
 class CorenlpSubprocWordSplitter(WordSplitter):
     """
     A ``WordSplitter`` that uses CoreNLP's tokenizer.
-    It runs a ``corenlp-server`` as a sub-process, and call it's Web API.
+    It starts ``corenlp-server`` as a sub-process, and call it's Web API.
     """
 
     def __init__(self,
