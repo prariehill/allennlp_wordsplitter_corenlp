@@ -36,8 +36,8 @@ class CorenlpRemoteWordSplitter(WordSplitter):
     @overrides
     def batch_split_words(self, sentences: List[str]) -> List[List[Token]]:
         with ThreadPoolExecutor() as executor:
-            return [m for m in executor.map(
-                lambda s: [Token(t) for t in self._make_parser().tokenize(s)],
+            return [Token(ret_val) for ret_val in executor.map(
+                lambda s: [t for t in self._make_parser().tokenize(s)],
                 sentences
             )]
 
