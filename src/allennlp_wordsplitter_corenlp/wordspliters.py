@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
-from allennlp.common import Registrable
 from allennlp.data.tokenizers.token import Token
 from allennlp.data.tokenizers.word_splitter import WordSplitter
 from nltk.parse.corenlp import CoreNLPParser, CoreNLPServer
