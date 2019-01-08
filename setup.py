@@ -27,7 +27,7 @@ setup(
     setup_requires=['setuptools_scm', 'setuptools_scm_git_archive'],
 
     install_requires=[
-        'allennlp<0.8,>=0.7',
+        'allennlp<0.9,>=0.7',
     ],
 
     extras_require={

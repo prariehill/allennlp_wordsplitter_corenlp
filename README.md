@@ -1,6 +1,6 @@
 # allennlp_wordsplitter_corenlp
 
-Add a [CoreNLP] `WordSplitter` into [AllenNLP]'s tokenizers.
+Add a [CoreNLP][] `WordSplitter` into [AllenNLP][]'s tokenizers.
 
 ## config
 
