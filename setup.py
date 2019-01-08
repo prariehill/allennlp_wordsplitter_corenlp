@@ -28,6 +28,7 @@ setup(
 
     install_requires=[
         'allennlp<0.9,>=0.7',
+        'nltk',
     ],
 
     extras_require={

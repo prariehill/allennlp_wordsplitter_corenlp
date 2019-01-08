@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+allennlp-wordsplitter-corenlp = {editable = true,path = "."}
+autopep8 = "*"
+pylint = "*"
+rope = "*"
+twine = "*"
+wheel = "*"
+
+[packages]
+
+[requires]
