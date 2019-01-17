@@ -1,0 +1,15 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+allennlp-wordsplitter-corenlp = {editable = true,path = "."}
+pylint = "*"
+yapf = "*"
+rope = "*"
+twine = "*"
+
+[packages]
+
+[requires]

@@ -16,10 +16,11 @@ class CorenlpRemoteWordSplitter(WordSplitter):
     It calls ``corenlp-server``'s Web API.
     """
 
-    def __init__(self,
-                 url: str = 'http://localhost:9000',
-                 encoding: str = 'utf8',
-                 ):
+    def __init__(
+            self,
+            url: str = 'http://localhost:9000',
+            encoding: str = 'utf8',
+    ):
         """
         Parameters
         ----------
@@ -35,10 +36,11 @@ class CorenlpRemoteWordSplitter(WordSplitter):
     @overrides
     def batch_split_words(self, sentences: List[str]) -> List[List[Token]]:
         with ThreadPoolExecutor() as executor:
-            return [Token(ret_val) for ret_val in executor.map(
-                lambda s: [t for t in self._make_parser().tokenize(s)],
-                sentences
-            )]
+            return [
+                Token(ret_val) for ret_val in executor.map(
+                    lambda s: [t for t in self._make_parser().tokenize(s)],
+                    sentences)
+            ]
 
 
 @WordSplitter.register('corenlp_subproc')
@@ -48,15 +50,16 @@ class CorenlpSubprocWordSplitter(CorenlpRemoteWordSplitter):
     It starts ``corenlp-server`` as a sub-process, and call it's Web API.
     """
 
-    def __init__(self,
-                 path_to_jar: str = None,
-                 path_to_models_jar: str = None,
-                 verbose: str = False,
-                 java_options: str = None,
-                 corenlp_options: str = None,
-                 port: int = None,
-                 encoding: str = 'utf8',
-                 ):
+    def __init__(
+            self,
+            path_to_jar: str = None,
+            path_to_models_jar: str = None,
+            verbose: str = False,
+            java_options: str = None,
+            corenlp_options: str = None,
+            port: int = None,
+            encoding: str = 'utf8',
+    ):
         """
         Parameters
         ----------
@@ -64,8 +67,8 @@ class CorenlpSubprocWordSplitter(CorenlpRemoteWordSplitter):
         * For parameters from ``path_to_jar`` to ``port``, see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.
         * For parameter ``encoding``,  see https://www.nltk.org/api/nltk.parse.html#nltk.parse.corenlp.CoreNLPParser
         """
-        self._server = CoreNLPServer(
-            path_to_jar, path_to_models_jar, verbose, java_options, corenlp_options, port)
+        self._server = CoreNLPServer(path_to_jar, path_to_models_jar, verbose,
+                                     java_options, corenlp_options, port)
         self._server.start()
         super().__init__(self._server.url, encoding)
 
